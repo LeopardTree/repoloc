@@ -12,10 +12,10 @@ namespace test
         static void Main(string[] args)
         {
 
-            long persnum = 198811013456;
-            int lengthpersnum = Math.Log10(persnum);
-            int firstFourDigits = persnum / Math.Pow((lengthpersnum - 4));
-            Console.Write(firstFourDigits);
+            //long persnum = 198811013456;
+            //int lengthpersnum = Math.Log10(persnum);
+            //int firstFourDigits = persnum / Math.Pow((lengthpersnum - 4));
+            //Console.Write(firstFourDigits);
         }
 
         //static long[] arrayPersonalCodeNumber(long personalCodeNumber)

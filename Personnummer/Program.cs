@@ -16,6 +16,8 @@ namespace PersonalCodeNumber
             string userInput;
             bool isAPersonalCodeNumber;
             long[] arrayPersonalCodeNumber;
+            int firstIndex, lastIndex;
+
             
             // Ask for personal code number, 12 digits (swedish)
             Console.WriteLine("Skriv in ditt personnummer:");
@@ -53,8 +55,6 @@ namespace PersonalCodeNumber
 
         static bool ControlTwelveDigits(long[] arrayPersonalCodeNumber)
         {
-            //calculates what the power of 10 needs to be to be equal as the personalcodenumber. 
-            //because of the length should be 12, the power needs to be 11... something. (the last digit is 10^0).
 
             int lengthPersonalCodenum = arrayPersonalCodeNumber.Length;
 
@@ -65,6 +65,8 @@ namespace PersonalCodeNumber
             else
                 return false;
         }
+
+        //did this method before i made the array. that's why I don't use the array here.
         static bool ControlRightYear(long personalCodeNumber)
         {
             int lengthOfPersonalCodeNumber = 12;
@@ -81,7 +83,12 @@ namespace PersonalCodeNumber
         }
         //static bool ControlMonthOneToTwelve(long[] arrayPersonalCodeNumber)
         //{
-        //    int month = 0;
+
+        //    long month = PickYourDigits(arrayPersonalCodeNumber, 4, 5);
+
+            
+
+
         //}
         static long[] ArrayPersonalCodeNumber(long personalCodeNumber)
         {
@@ -103,6 +110,18 @@ namespace PersonalCodeNumber
 
             return arrayPersonalCodeNumber;
 
+        }
+        static long PickYourDigits(long[] arrayPersonalCodeNumber, int firstIndex, int lastIndex)
+        {
+            int firstpower = 12 - firstIndex;
+            long digits = 0;
+            
+            
+            for (int i = firstIndex; i <= lastIndex; i++)
+            {
+                digits += arrayPersonalCodeNumber[i] * Convert.ToInt64(Math.Pow(10, 12-(i+1)));
+            }
+            return digits;
         }
     }
 }
