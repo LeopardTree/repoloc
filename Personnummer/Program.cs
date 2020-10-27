@@ -15,6 +15,7 @@ namespace PersonalCodeNumber
             long personalCodeNumber;
             string userInput;
             bool isAPersonalCodeNumber;
+            long[] arrayPersonalCodeNumber;
             
             // Ask for personal code number, 12 digits (swedish)
             Console.WriteLine("Skriv in ditt personnummer:");
@@ -22,14 +23,18 @@ namespace PersonalCodeNumber
             // Read input
             userInput = Console.ReadLine();
             personalCodeNumber = long.Parse(userInput);
+            arrayPersonalCodeNumber = ArrayPersonalCodeNumber(personalCodeNumber);
+
+            //(Add) method 
             // Method, control right amount of digits
-            isAPersonalCodeNumber = ControlTwelveDigits(personalCodeNumber);
-            Console.WriteLine("det är 12 siffor");
+            isAPersonalCodeNumber = ControlTwelveDigits(arrayPersonalCodeNumber);
+
             // Method, control right year, 1753-2020
-            //if (isAPersonalCodeNumber)
-            //{
-            //    isAPersonalCodeNumber = ControlRightYear(personalCodeNumber);
-            //}
+            //controls if its true from last method
+            if (isAPersonalCodeNumber)
+            {
+                isAPersonalCodeNumber = ControlRightYear(personalCodeNumber);
+            }
             // Method, control month, 1-12
 
             // Method, leap year
@@ -46,19 +51,58 @@ namespace PersonalCodeNumber
             Console.ReadKey();
         }
 
-        static bool ControlTwelveDigits(long PersonalCodeNumber)
+        static bool ControlTwelveDigits(long[] arrayPersonalCodeNumber)
         {
+            //calculates what the power of 10 needs to be to be equal as the personalcodenumber. 
+            //because of the length should be 12, the power needs to be 11... something. (the last digit is 10^0).
 
-            if (Math.Log10(PersonalCodeNumber) == 12)
+            int lengthPersonalCodenum = arrayPersonalCodeNumber.Length;
+
+            if (lengthPersonalCodenum == 12)
             {
                 return true;
             }
             else
                 return false;
         }
-        //static bool ControlRightYear(int PersonalCodeNumber)
-        //{
+        static bool ControlRightYear(long personalCodeNumber)
+        {
+            int lengthOfPersonalCodeNumber = 12;
+            //divides by 10^(12-4) to get the first four numbers in decimals. Then truncates the decimals.
+            double firstFourDecimal = personalCodeNumber / Math.Pow(10, lengthOfPersonalCodeNumber - 4);
+            int firstFour = Convert.ToInt32(firstFourDecimal);
 
+            if (firstFour > 1752 || firstFour < 2021)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+        //static bool ControlMonthOneToTwelve(long[] arrayPersonalCodeNumber)
+        //{
+        //    int month = 0;
         //}
+        static long[] ArrayPersonalCodeNumber(long personalCodeNumber)
+        {
+
+            long[] arrayPersonalCodeNumber = new long[12];
+            int lengthArray = arrayPersonalCodeNumber.Length;
+            long updatenumber = personalCodeNumber;
+            int j = lengthArray;
+            for (int i = 0; i < lengthArray; i++)
+            {
+
+
+                arrayPersonalCodeNumber[i] = updatenumber / Convert.ToInt64(Math.Pow(10, j));
+                updatenumber = updatenumber - arrayPersonalCodeNumber[i] * Convert.ToInt64(Math.Pow(10, j));
+                j = j - 1;
+
+
+            }
+
+            return arrayPersonalCodeNumber;
+
+        }
     }
 }
