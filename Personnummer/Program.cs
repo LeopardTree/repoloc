@@ -16,7 +16,7 @@ namespace PersonalCodeNumber
             string userInput;
             bool isAPersonalCodeNumber;
             long[] arrayPersonalCodeNumber;
-            int firstIndex, lastIndex;
+            
 
             
             // Ask for personal code number, 12 digits (swedish)
@@ -38,7 +38,10 @@ namespace PersonalCodeNumber
                 isAPersonalCodeNumber = ControlRightYear(personalCodeNumber);
             }
             // Method, control month, 1-12
-
+            if (isAPersonalCodeNumber)
+            {
+                isAPersonalCodeNumber = ControlMonthOneToTwelve(arrayPersonalCodeNumber);
+            }
             // Method, leap year
 
             // Method, control day and check to month. 
@@ -81,46 +84,54 @@ namespace PersonalCodeNumber
             else
                 return false;
         }
-        //static bool ControlMonthOneToTwelve(long[] arrayPersonalCodeNumber)
-        //{
-
-        //    long month = PickYourDigits(arrayPersonalCodeNumber, 4, 5);
-
-            
-
-
-        //}
-        static long[] ArrayPersonalCodeNumber(long personalCodeNumber)
+        static bool ControlMonthOneToTwelve(long[] arrayPersonalCodeNumber)
         {
 
+            long month = PickYourDigits(arrayPersonalCodeNumber, 4, 5);
+
+            if (month < 13 || month > 0)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+        static long[] ArrayPersonalCodeNumber(long personalCodeNumber)
+        {
+            //declares an array of 12 elements
             long[] arrayPersonalCodeNumber = new long[12];
             int lengthArray = arrayPersonalCodeNumber.Length;
             long updatenumber = personalCodeNumber;
             int j = lengthArray;
+            // 
             for (int i = 0; i < lengthArray; i++)
             {
 
-
-                arrayPersonalCodeNumber[i] = updatenumber / Convert.ToInt64(Math.Pow(10, j));
-                updatenumber = updatenumber - arrayPersonalCodeNumber[i] * Convert.ToInt64(Math.Pow(10, j));
+                arrayPersonalCodeNumber[i] = updatenumber / Convert.ToInt64(Math.Pow(10, j - 1));
+                updatenumber = updatenumber - arrayPersonalCodeNumber[i] * Convert.ToInt64(Math.Pow(10, j - 1));
                 j = j - 1;
 
-
+                
+                //Console.WriteLine(arrayPersonalCodeNumber[i]);
             }
-
+            
             return arrayPersonalCodeNumber;
 
         }
         static long PickYourDigits(long[] arrayPersonalCodeNumber, int firstIndex, int lastIndex)
         {
-            int firstpower = 12 - firstIndex;
+            
+            long digitsWithZeros = 0;
+            int i = 0;
             long digits = 0;
-            
-            
-            for (int i = firstIndex; i <= lastIndex; i++)
+            //Multiplies each digit in the array with 10^(length - place in array)
+            //divides with with 10^(length - place in array) for each digit
+            for (i = firstIndex; i <= lastIndex; i++)
             {
-                digits += arrayPersonalCodeNumber[i] * Convert.ToInt64(Math.Pow(10, 12-(i+1)));
+                digitsWithZeros += arrayPersonalCodeNumber[i] * Convert.ToInt64(Math.Pow(10, 12-i-1));
+                digits = digitsWithZeros / Convert.ToInt64(Math.Pow(10, 12 - i - 1));
             }
+            
             return digits;
         }
     }
