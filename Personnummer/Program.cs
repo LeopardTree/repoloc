@@ -43,16 +43,21 @@ namespace PersonalCodeNumber
             }
             // Method, control month, 1-12
             month = PickYourDigits(arrayPersonalCodeNumber, 4, 5);
+            //Console.WriteLine(month);
             if (isAPersonalCodeNumber)
             {
                 isAPersonalCodeNumber = ControlMonth(month);
             }
             // Method, leap year
             leapyear = LeapYear(year);
-            Console.WriteLine(leapyear);
+            
             // Method, control day and check to month. 
             day = PickYourDigits(arrayPersonalCodeNumber, 6, 7);
-            //Console.WriteLine(day);
+            if (isAPersonalCodeNumber)
+            {
+                isAPersonalCodeNumber = ControlDay(month, day, leapyear);
+            }
+            
             // Method, control birth number 000-999
 
             // Method, check sex
@@ -105,6 +110,7 @@ namespace PersonalCodeNumber
             }
             else
                 return false;
+            
         }
         static long[] ArrayPersonalCodeNumber(long personalCodeNumber)
         {
@@ -166,11 +172,44 @@ namespace PersonalCodeNumber
             }
             return leapyear;
         }
-        //static bool ControlDay(long month, bool leapyear)
-        //{
-            
+        static bool ControlDay(long month, long day, bool leapyear)
+        { 
+            bool dayIsRight = true;
+            //arrays for the months with 31 and 30 days
+            int[] array31Days = new int[7] { 1, 3, 5, 7, 8, 10, 12 };
+            int[] array30Days = new int[4] { 4, 6, 9, 11 };
 
-
-        //}
+            for (int i = 0; i < 7; i++)
+            {
+                if (array31Days[i] == month & day > 31)
+                {
+                    dayIsRight = false;
+                }   
+            }
+            for(int i = 0; i < 4; i++)
+            {
+                if (array30Days[i] == month & day > 30)
+                {
+                    dayIsRight = false;
+                }
+            }
+            //february
+            if (month == 2)
+            {
+                if(leapyear & day > 29)
+                {
+                    dayIsRight = false;
+                }
+                if (leapyear == false & day > 28)
+                {
+                    dayIsRight = false;
+                }
+            }
+            if (day < 1)
+            {
+                dayIsRight = false;
+            }
+            return dayIsRight;
+        }
     }
 }
