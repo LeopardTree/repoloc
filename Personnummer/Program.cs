@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Schema;
@@ -20,50 +21,69 @@ namespace PersonalCodeNumber
             bool leapyear;
             long month;
             long day;
-            // Ask for personal code number, 12 digits (swedish)
-            Console.WriteLine("Skriv in ditt personnummer:");
+            long birthnumber;
+            string sex;
+            bool move = true;
+            while(move)
+            { 
+                // Ask for personal code number, 12 digits (swedish)
+                Console.WriteLine("Skriv in ditt personnummer:");
 
-            // Read input
-            userInput = Console.ReadLine();
-            personalCodeNumber = long.Parse(userInput);
-            arrayPersonalCodeNumber = ArrayPersonalCodeNumber(personalCodeNumber);
+                // Read input
+                userInput = Console.ReadLine();
+                personalCodeNumber = long.Parse(userInput);
+                arrayPersonalCodeNumber = ArrayPersonalCodeNumber(personalCodeNumber);
 
-            //(Add) method 
-            // Method, control right amount of digits
-            isAPersonalCodeNumber = ControlTwelveDigits(arrayPersonalCodeNumber);
+                //(Add) method 
+                // Method, control right amount of digits
+                isAPersonalCodeNumber = ControlTwelveDigits(arrayPersonalCodeNumber);
 
+                //Method to get the year
+                year = Year(personalCodeNumber);
+                // Method, control right year, 1753-2020
+                //controls if its true from last method
+                if (isAPersonalCodeNumber)
+                {
+                    isAPersonalCodeNumber = ControlRightYear(year);
+                }
+                // Method, control month, 1-12
+                month = PickYourDigits(arrayPersonalCodeNumber, 4, 5);
+                //Console.WriteLine(month);
+                if (isAPersonalCodeNumber)
+                {
+                    isAPersonalCodeNumber = ControlMonth(month);
+                }
+                // Method, leap year
+                leapyear = LeapYear(year);
 
-            //Method to get the year
-            year = Year(personalCodeNumber);
-            // Method, control right year, 1753-2020
-            //controls if its true from last method
-            if (isAPersonalCodeNumber)
-            {
-                isAPersonalCodeNumber = ControlRightYear(year);
+                // Method, control day and check to month. 
+                day = PickYourDigits(arrayPersonalCodeNumber, 6, 7);
+                if (isAPersonalCodeNumber)
+                {
+                    isAPersonalCodeNumber = ControlDay(month, day, leapyear);
+                }
+
+                // Method, control birth number 000-999
+                birthnumber = PickYourDigits(arrayPersonalCodeNumber, 8, 10);
+                if (isAPersonalCodeNumber)
+                {
+                    isAPersonalCodeNumber = ControlBirthNumber(birthnumber);
+
+                }
+                // Method, check sex
+                if (isAPersonalCodeNumber)
+                {
+                    sex = ControlSex(birthnumber);
+                    Console.WriteLine("Korrekt personnummer med kön {0}.", sex);
+                }
+                // Print if correct or not. (Assuming all are digits) (swedish)
+                else
+                {
+                    Console.WriteLine("Detta var inte ett korrekt personnummer.");
+                    
+                }
+
             }
-            // Method, control month, 1-12
-            month = PickYourDigits(arrayPersonalCodeNumber, 4, 5);
-            //Console.WriteLine(month);
-            if (isAPersonalCodeNumber)
-            {
-                isAPersonalCodeNumber = ControlMonth(month);
-            }
-            // Method, leap year
-            leapyear = LeapYear(year);
-            
-            // Method, control day and check to month. 
-            day = PickYourDigits(arrayPersonalCodeNumber, 6, 7);
-            if (isAPersonalCodeNumber)
-            {
-                isAPersonalCodeNumber = ControlDay(month, day, leapyear);
-            }
-            
-            // Method, control birth number 000-999
-
-            // Method, check sex
-
-            // Print if correct or not. (Assuming all are digits) (swedish)
-
             //stop
             Console.ReadKey();
         }
@@ -82,21 +102,19 @@ namespace PersonalCodeNumber
         }
         static bool ControlRightYear(int year)
         {
-            
-            if (year > 1752 || year < 2021)
+            //both must be true
+            if (year > 1752 && year < 2021)
             {
                 return true;
             }
             else
                 return false;
         }
-        
         //did this method before i made the array. that's why I don't use the array here.
         static int Year(long personalCodeNumber)
         {
-            int lengthOfPersonalCodeNumber = 12;
             //divides by 10^(12-4) to get the first four numbers in decimals. Then truncates the decimals.
-            double firstFourDecimal = personalCodeNumber / Math.Pow(10, lengthOfPersonalCodeNumber - 4);
+            double firstFourDecimal = personalCodeNumber / Math.Pow(10, 12 - 4);
             int year = Convert.ToInt32(firstFourDecimal);
             return year;
         }
@@ -104,13 +122,12 @@ namespace PersonalCodeNumber
         {
             //the digits for month are at index 4 and 5 since the array starts at index 0
 
-            if (month < 13 || month > 0)
+            if (month < 13 && month > 0)
             {
                 return true;
             }
             else
-                return false;
-            
+                return false;   
         }
         static long[] ArrayPersonalCodeNumber(long personalCodeNumber)
         {
@@ -122,17 +139,12 @@ namespace PersonalCodeNumber
             // 
             for (int i = 0; i < lengthArray; i++)
             {
-
                 arrayPersonalCodeNumber[i] = updatenumber / Convert.ToInt64(Math.Pow(10, j - 1));
                 updatenumber = updatenumber - arrayPersonalCodeNumber[i] * Convert.ToInt64(Math.Pow(10, j - 1));
                 j = j - 1;
-
-                
                 //Console.WriteLine(arrayPersonalCodeNumber[i]);
             }
-            
             return arrayPersonalCodeNumber;
-
         }
         static long PickYourDigits(long[] arrayPersonalCodeNumber, int firstIndex, int lastIndex)
         {
@@ -210,6 +222,26 @@ namespace PersonalCodeNumber
                 dayIsRight = false;
             }
             return dayIsRight;
+        }
+        static bool ControlBirthNumber(long birthnumber)
+        {
+            //both must be true
+            if (birthnumber >= 0 && birthnumber <= 999)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+        static string ControlSex(long birthnumber)
+        {
+            string sex = "";
+            if (birthnumber % 2 == 0 || birthnumber == 0)
+            {
+                return sex = "kvinna";
+            }
+            else
+                return sex = "man";
         }
     }
 }
