@@ -16,9 +16,10 @@ namespace PersonalCodeNumber
             string userInput;
             bool isAPersonalCodeNumber;
             long[] arrayPersonalCodeNumber;
-            
-
-            
+            int year;
+            bool leapyear;
+            long month;
+            long day;
             // Ask for personal code number, 12 digits (swedish)
             Console.WriteLine("Skriv in ditt personnummer:");
 
@@ -31,21 +32,27 @@ namespace PersonalCodeNumber
             // Method, control right amount of digits
             isAPersonalCodeNumber = ControlTwelveDigits(arrayPersonalCodeNumber);
 
+
+            //Method to get the year
+            year = Year(personalCodeNumber);
             // Method, control right year, 1753-2020
             //controls if its true from last method
             if (isAPersonalCodeNumber)
             {
-                isAPersonalCodeNumber = ControlRightYear(personalCodeNumber);
+                isAPersonalCodeNumber = ControlRightYear(year);
             }
             // Method, control month, 1-12
+            month = PickYourDigits(arrayPersonalCodeNumber, 4, 5);
             if (isAPersonalCodeNumber)
             {
-                isAPersonalCodeNumber = ControlMonthOneToTwelve(arrayPersonalCodeNumber);
+                isAPersonalCodeNumber = ControlMonth(month);
             }
             // Method, leap year
-
+            leapyear = LeapYear(year);
+            Console.WriteLine(leapyear);
             // Method, control day and check to month. 
-
+            day = PickYourDigits(arrayPersonalCodeNumber, 6, 7);
+            //Console.WriteLine(day);
             // Method, control birth number 000-999
 
             // Method, check sex
@@ -68,26 +75,29 @@ namespace PersonalCodeNumber
             else
                 return false;
         }
-
-        //did this method before i made the array. that's why I don't use the array here.
-        static bool ControlRightYear(long personalCodeNumber)
+        static bool ControlRightYear(int year)
         {
-            int lengthOfPersonalCodeNumber = 12;
-            //divides by 10^(12-4) to get the first four numbers in decimals. Then truncates the decimals.
-            double firstFourDecimal = personalCodeNumber / Math.Pow(10, lengthOfPersonalCodeNumber - 4);
-            int firstFour = Convert.ToInt32(firstFourDecimal);
-
-            if (firstFour > 1752 || firstFour < 2021)
+            
+            if (year > 1752 || year < 2021)
             {
                 return true;
             }
             else
                 return false;
         }
-        static bool ControlMonthOneToTwelve(long[] arrayPersonalCodeNumber)
+        
+        //did this method before i made the array. that's why I don't use the array here.
+        static int Year(long personalCodeNumber)
         {
-
-            long month = PickYourDigits(arrayPersonalCodeNumber, 4, 5);
+            int lengthOfPersonalCodeNumber = 12;
+            //divides by 10^(12-4) to get the first four numbers in decimals. Then truncates the decimals.
+            double firstFourDecimal = personalCodeNumber / Math.Pow(10, lengthOfPersonalCodeNumber - 4);
+            int year = Convert.ToInt32(firstFourDecimal);
+            return year;
+        }
+        static bool ControlMonth(long month)
+        {
+            //the digits for month are at index 4 and 5 since the array starts at index 0
 
             if (month < 13 || month > 0)
             {
@@ -134,5 +144,33 @@ namespace PersonalCodeNumber
             
             return digits;
         }
+        static bool LeapYear(int year)
+        {
+            bool leapyear = false;
+
+            if (year % 400 == 0)
+            {
+                leapyear = true;
+            }
+            else if (year % 100 == 0)
+            {
+                leapyear = false;
+            }
+            else if (year % 4 == 0)
+            {
+                leapyear = true;
+            }
+            else
+            {
+                leapyear = false;
+            }
+            return leapyear;
+        }
+        //static bool ControlDay(long month, bool leapyear)
+        //{
+            
+
+
+        //}
     }
 }
