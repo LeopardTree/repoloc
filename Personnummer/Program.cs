@@ -31,10 +31,11 @@ namespace PersonalCodeNumber
 
                 // Read input
                 userInput = Console.ReadLine();
+                //(Assuming all input are digits)
                 personalCodeNumber = long.Parse(userInput);
+                //method for creating an array of 
                 arrayPersonalCodeNumber = ArrayPersonalCodeNumber(personalCodeNumber);
 
-                //(Add) method 
                 // Method, control right amount of digits
                 isAPersonalCodeNumber = ControlTwelveDigits(arrayPersonalCodeNumber);
 
@@ -76,7 +77,7 @@ namespace PersonalCodeNumber
                     sex = ControlSex(birthnumber);
                     Console.WriteLine("Korrekt personnummer med kön {0}.", sex);
                 }
-                // Print if correct or not. (Assuming all are digits) (swedish)
+                // Print if correct or not.  (swedish)
                 else
                 {
                     Console.WriteLine("Detta var inte ett korrekt personnummer.");
