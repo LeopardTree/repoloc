@@ -24,15 +24,26 @@ namespace PersonalCodeNumber
             long birthnumber;
             string sex;
             bool move = true;
-            while(move)
-            { 
-                // Ask for personal code number, 12 digits (swedish)
-                Console.WriteLine("Skriv in ditt personnummer:");
+            while (move)
+            {
+                // Ask for personal code number, 12 digits or 10 digits (with punctuation mark)
+                Console.WriteLine("Skriv in ett personnummer:");
 
                 // Read input
+                //Troubleshooting: while loop...
+                //If{ userInput är 11 char long. Control if its just digits and punctuation mark at index 6. 
+                // return true or false}
+                //Else{ Do a Int64.TryParse. return true or false}
                 userInput = Console.ReadLine();
-                //(Assuming all input are digits)
-                personalCodeNumber = long.Parse(userInput);
+                if(userInput.Length == 11)
+                {
+                    personalCodeNumber = ConvertTenToTwelve(userInput);
+                }
+                else
+                {
+                    personalCodeNumber = long.Parse(userInput);
+                }
+                
                 //method for creating an array of 
                 arrayPersonalCodeNumber = ArrayPersonalCodeNumber(personalCodeNumber);
 
@@ -71,17 +82,16 @@ namespace PersonalCodeNumber
                     isAPersonalCodeNumber = ControlBirthNumber(birthnumber);
 
                 }
-                // Method, check sex
+                // Method, check sex and print if correct
                 if (isAPersonalCodeNumber)
                 {
                     sex = ControlSex(birthnumber);
                     Console.WriteLine("Korrekt personnummer med kön {0}.", sex);
                 }
-                // Print if correct or not.  (swedish)
+                // Print if not correct  
                 else
                 {
                     Console.WriteLine("Detta var inte ett korrekt personnummer.");
-                    
                 }
 
             }
@@ -126,7 +136,7 @@ namespace PersonalCodeNumber
                 return true;
             }
             else
-                return false;   
+                return false;
         }
         static long[] ArrayPersonalCodeNumber(long personalCodeNumber)
         {
@@ -147,18 +157,20 @@ namespace PersonalCodeNumber
         }
         static long PickYourDigits(long[] arrayPersonalCodeNumber, int firstIndex, int lastIndex)
         {
-            
-            long digitsWithZeros = 0;
+
+            //long digitsWithZeros = 0;
             int i = 0;
             long digits = 0;
-            //Multiplies each digit in the array with 10^(length - place in array)
-            //divides with with 10^(length - place in array) for each digit
+            int tenthpower = lastIndex - firstIndex;
+            int j = 0;
+            //
             for (i = firstIndex; i <= lastIndex; i++)
             {
-                digitsWithZeros += arrayPersonalCodeNumber[i] * Convert.ToInt64(Math.Pow(10, 12-i-1));
-                digits = digitsWithZeros / Convert.ToInt64(Math.Pow(10, 12 - i - 1));
+                digits += arrayPersonalCodeNumber[i] * Convert.ToInt64(Math.Pow(10, tenthpower - j));
+                //digits = digitsWithZeros / Convert.ToInt64(Math.Pow(10, tenthpower - j));
+                j++;
             }
-            
+
             return digits;
         }
         static bool LeapYear(int year)
@@ -184,7 +196,7 @@ namespace PersonalCodeNumber
             return leapyear;
         }
         static bool ControlDay(long month, long day, bool leapyear)
-        { 
+        {
             bool dayIsRight = true;
             //arrays for the months with 31 and 30 days
             int[] array31Days = new int[7] { 1, 3, 5, 7, 8, 10, 12 };
@@ -195,9 +207,9 @@ namespace PersonalCodeNumber
                 if (array31Days[i] == month & day > 31)
                 {
                     dayIsRight = false;
-                }   
+                }
             }
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 if (array30Days[i] == month & day > 30)
                 {
@@ -207,7 +219,7 @@ namespace PersonalCodeNumber
             //february
             if (month == 2)
             {
-                if(leapyear & day > 29)
+                if (leapyear & day > 29)
                 {
                     dayIsRight = false;
                 }
@@ -234,13 +246,18 @@ namespace PersonalCodeNumber
         }
         static string ControlSex(long birthnumber)
         {
-            string sex = "";
+            
             if (birthnumber % 2 == 0 || birthnumber == 0)
             {
-                return sex = "kvinna";
+                return "kvinna";
             }
             else
-                return sex = "man";
+                return "man";
         }
+        //static bool CheckControlDigit(long [] arrayPersonalCodeNumber)
+        //{
+
+        //}
+        static 
     }
 }
