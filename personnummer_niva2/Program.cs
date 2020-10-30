@@ -13,8 +13,7 @@ namespace PersonalCodeNumber
         static void Main(string[] args)
         {
             // Declare variables
-            long personalCodeNumber = 0;
-            string userInput;
+            long personalCodeNumber;
             bool isAPersonalCodeNumber = false;
             long[] arrayPersonalCodeNumber;
             int year;
@@ -36,12 +35,8 @@ namespace PersonalCodeNumber
                 //Else{ Do a Int64.TryParse. return true or false}
 
                 personalCodeNumber = UserInput();
-                
-                //Then if the number is 10 digits convert it to 12
-                if (personalCodeNumber == 1)
-                {
 
-                }
+
                 //method for creating an array of 
                 arrayPersonalCodeNumber = ArrayPersonalCodeNumber(personalCodeNumber);
 
@@ -80,12 +75,20 @@ namespace PersonalCodeNumber
                     isAPersonalCodeNumber = ControlBirthNumber(birthnumber);
 
                 }
+                // Method, check the verificationdigit
+                if (isAPersonalCodeNumber)
+                {
+                    isAPersonalCodeNumber = ControlVerificationDigit(arrayPersonalCodeNumber);
+
+                }
                 // Method, check sex and print if correct
                 if (isAPersonalCodeNumber)
                 {
                     sex = ControlSex(birthnumber);
                     Console.WriteLine("Korrekt personnummer med kön {0}.", sex);
                 }
+
+
                 // Print if not correct  
                 else
                 {
@@ -244,7 +247,7 @@ namespace PersonalCodeNumber
         }
         static string ControlSex(long birthnumber)
         {
-            
+
             if (birthnumber % 2 == 0 || birthnumber == 0)
             {
                 return "kvinna";
@@ -261,20 +264,20 @@ namespace PersonalCodeNumber
             bool inputIsOk = true;
             //array with the positions for where the digits should be in the tendigits personalcodenumber
             int[] arrayTenDigits = new int[10] { 0, 1, 2, 3, 4, 5, 7, 8, 9, 10 };
-            
-                for (int i = 0; i < 10; i++)
-                {
-                    if (Char.IsDigit(userInput[arrayTenDigits[i]]) == false)
-                    {
-                        inputIsOk = false;
-                    }
-                }
-                //The 6th index in userInput should be a punctuation mark.
-                //43 is asci for + and 45 is asci for - . 
-                if (userInput[6] != (char)43 ^ userInput[6] != (char)45)
+
+            for (int i = 0; i < 10; i++)
+            {
+                if (Char.IsDigit(userInput[arrayTenDigits[i]]) == false)
                 {
                     inputIsOk = false;
                 }
+            }
+            //The 6th index in userInput should be a punctuation mark.
+            //43 is asci for + and 45 is asci for - . 
+            if (userInput[6] == (char)43 ^ userInput[6] == (char)45)
+            {
+                inputIsOk = true;
+            }
             return inputIsOk;
         }
         static long UserInput()
@@ -282,8 +285,9 @@ namespace PersonalCodeNumber
             bool isAPersonalCodeNumber = false;
             string userInput = "";
             long personalCodeNumber = 0;
-            
-            while (isAPersonalCodeNumber == false){
+
+            while (isAPersonalCodeNumber == false)
+            {
                 Console.WriteLine("Skriv in ett personnummer:");
                 userInput = Console.ReadLine();
                 if (userInput.Length == 11)
@@ -295,7 +299,6 @@ namespace PersonalCodeNumber
                         //if the characters are right. convert to a twelve digit number
                         personalCodeNumber = ConvertTenToTwelve(userInput);
                     }
-                    
                 }
                 else
                 {
@@ -307,6 +310,7 @@ namespace PersonalCodeNumber
         static long ConvertTenToTwelve(string userInput)
         {
             long personalCodeNumber;
+            bool more = true;
             //first the string is 11 char long
             //if the first digit is 0, 1 or 2: 
             // {if index 6 is - ,  add 20
@@ -314,16 +318,28 @@ namespace PersonalCodeNumber
             //else 
             // {if index 6 is - add 19
             // else, add 18}
-            if (userInput[0] == 0 ^ userInput[0] == 1 ^ userInput[0] == 2)
+
+            for (int i = 0; i < 3; i++)
             {
-                if (userInput[6] == (char)45)
+                if (userInput[0] == (char)(48 + i))
                 {
-                    userInput = "20" + userInput;
+                    if (userInput[6] == (char)45)
+                    {
+                        userInput = "20" + userInput;
+                        more = false;
+                    }
+                    else if (userInput[6] == (char)43)
+                    {
+                        userInput = "19" + userInput;
+                        more = false;
+                    }
                 }
-                else
-                    userInput = "19" + userInput;
+                if (more == false)
+                {
+                    break;
+                }
             }
-            else
+            if (more == true)
             {
                 if (userInput[6] == (char)45)
                 {
@@ -334,9 +350,13 @@ namespace PersonalCodeNumber
             }
             //now the string is 13 char long
             //the punctuation mark are at index 8
-            userInput = userInput.Remove(8, 0);
+            userInput = userInput.Remove(8, 1);
             return personalCodeNumber = Int64.Parse(userInput);
         }
-        
+        static bool ControlVerificationDigit(long[] arrayPersonalCodeNumber)
+        {
+
+        }
+
     }
 }
