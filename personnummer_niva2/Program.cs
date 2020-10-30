@@ -13,9 +13,9 @@ namespace PersonalCodeNumber
         static void Main(string[] args)
         {
             // Declare variables
-            long personalCodeNumber;
+            long personalCodeNumber = 0;
             string userInput;
-            bool isAPersonalCodeNumber;
+            bool isAPersonalCodeNumber = false;
             long[] arrayPersonalCodeNumber;
             int year;
             bool leapyear;
@@ -27,23 +27,21 @@ namespace PersonalCodeNumber
             while (move)
             {
                 // Ask for personal code number, 12 digits or 10 digits (with punctuation mark)
-                Console.WriteLine("Skriv in ett personnummer:");
+
 
                 // Read input
                 //Troubleshooting: while loop...
                 //If{ userInput är 11 char long. Control if its just digits and punctuation mark at index 6. 
                 // return true or false}
                 //Else{ Do a Int64.TryParse. return true or false}
-                userInput = Console.ReadLine();
-                if(userInput.Length == 11)
-                {
-                    personalCodeNumber = ConvertTenToTwelve(userInput);
-                }
-                else
-                {
-                    personalCodeNumber = long.Parse(userInput);
-                }
+
+                personalCodeNumber = UserInput();
                 
+                //Then if the number is 10 digits convert it to 12
+                if (personalCodeNumber == 1)
+                {
+
+                }
                 //method for creating an array of 
                 arrayPersonalCodeNumber = ArrayPersonalCodeNumber(personalCodeNumber);
 
@@ -258,6 +256,87 @@ namespace PersonalCodeNumber
         //{
 
         //}
-        static 
+        static bool TroubleshootingTen(string userInput)
+        {
+            bool inputIsOk = true;
+            //array with the positions for where the digits should be in the tendigits personalcodenumber
+            int[] arrayTenDigits = new int[10] { 0, 1, 2, 3, 4, 5, 7, 8, 9, 10 };
+            
+                for (int i = 0; i < 10; i++)
+                {
+                    if (Char.IsDigit(userInput[arrayTenDigits[i]]) == false)
+                    {
+                        inputIsOk = false;
+                    }
+                }
+                //The 6th index in userInput should be a punctuation mark.
+                //43 is asci for + and 45 is asci for - . 
+                if (userInput[6] != (char)43 ^ userInput[6] != (char)45)
+                {
+                    inputIsOk = false;
+                }
+            return inputIsOk;
+        }
+        static long UserInput()
+        {
+            bool isAPersonalCodeNumber = false;
+            string userInput = "";
+            long personalCodeNumber = 0;
+            
+            while (isAPersonalCodeNumber == false){
+                Console.WriteLine("Skriv in ett personnummer:");
+                userInput = Console.ReadLine();
+                if (userInput.Length == 11)
+                {
+                    //method for checking if the characters are right
+                    isAPersonalCodeNumber = TroubleshootingTen(userInput);
+                    if (isAPersonalCodeNumber)
+                    {
+                        //if the characters are right. convert to a twelve digit number
+                        personalCodeNumber = ConvertTenToTwelve(userInput);
+                    }
+                    
+                }
+                else
+                {
+                    isAPersonalCodeNumber = Int64.TryParse(userInput, out personalCodeNumber);
+                }
+            }
+            return personalCodeNumber;
+        }
+        static long ConvertTenToTwelve(string userInput)
+        {
+            long personalCodeNumber;
+            //first the string is 11 char long
+            //if the first digit is 0, 1 or 2: 
+            // {if index 6 is - ,  add 20
+            // else , add 19  }
+            //else 
+            // {if index 6 is - add 19
+            // else, add 18}
+            if (userInput[0] == 0 ^ userInput[0] == 1 ^ userInput[0] == 2)
+            {
+                if (userInput[6] == (char)45)
+                {
+                    userInput = "20" + userInput;
+                }
+                else
+                    userInput = "19" + userInput;
+            }
+            else
+            {
+                if (userInput[6] == (char)45)
+                {
+                    userInput = "19" + userInput;
+                }
+                else
+                    userInput = "18" + userInput;
+            }
+            //now the string is 13 char long
+            //the punctuation mark are at index 8
+            userInput = userInput.Remove(8, 0);
+            return personalCodeNumber = Int64.Parse(userInput);
+        }
+        
     }
 }
