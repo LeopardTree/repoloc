@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -53,7 +54,7 @@ namespace PersonalCodeNumber
                 }
                 // Method, control month, 1-12
                 month = PickYourDigits(arrayPersonalCodeNumber, 4, 5);
-                //Console.WriteLine(month);
+                
                 if (isAPersonalCodeNumber)
                 {
                     isAPersonalCodeNumber = ControlMonth(month);
@@ -73,13 +74,11 @@ namespace PersonalCodeNumber
                 if (isAPersonalCodeNumber)
                 {
                     isAPersonalCodeNumber = ControlBirthNumber(birthnumber);
-
                 }
                 // Method, check the verificationdigit
                 if (isAPersonalCodeNumber)
                 {
                     isAPersonalCodeNumber = ControlVerificationDigit(arrayPersonalCodeNumber);
-
                 }
                 // Method, check sex and print if correct
                 if (isAPersonalCodeNumber)
@@ -87,19 +86,15 @@ namespace PersonalCodeNumber
                     sex = ControlSex(birthnumber);
                     Console.WriteLine("Korrekt personnummer med kön {0}.", sex);
                 }
-
-
                 // Print if not correct  
                 else
                 {
                     Console.WriteLine("Detta var inte ett korrekt personnummer.");
                 }
-
             }
             //stop
             Console.ReadKey();
         }
-
         static bool ControlTwelveDigits(long[] arrayPersonalCodeNumber)
         {
 
@@ -152,7 +147,7 @@ namespace PersonalCodeNumber
                 arrayPersonalCodeNumber[i] = updatenumber / Convert.ToInt64(Math.Pow(10, j - 1));
                 updatenumber = updatenumber - arrayPersonalCodeNumber[i] * Convert.ToInt64(Math.Pow(10, j - 1));
                 j = j - 1;
-                //Console.WriteLine(arrayPersonalCodeNumber[i]);
+                
             }
             return arrayPersonalCodeNumber;
         }
@@ -355,8 +350,43 @@ namespace PersonalCodeNumber
         }
         static bool ControlVerificationDigit(long[] arrayPersonalCodeNumber)
         {
+            //calculates and verifies the verificationdigit with the Luhn-algoritm
+            int[] arrayEven = new int[5];
+            int[] arrayOdd = new int[4];
+            int j = 0;
+            int i = 0;
+            int verificationDigit;
+            int additionnumber = 0;
+            for (i = 2; i < 11; i = i + 2)
+            {
+                arrayEven[j] = 2* Convert.ToInt32(arrayPersonalCodeNumber[i]);
+                j++;
+            }
+            j = 0;
+            for(i = 3; i < 10; i = i + 2)
+            {
+                arrayOdd[j] = Convert.ToInt32(arrayPersonalCodeNumber[i]);
+                // starts adding the numbers together. first the ones from odd index
+                additionnumber = additionnumber + arrayOdd[j];
+                j++;
+            }
+            for(i = 0; i < 5; i++)
+            {
+                if ( arrayEven[i] > 9)
+                {  
+                    //split up a number between 10-19 and add together is the same as subtract 9 from it.
+                    arrayEven[i] = arrayEven[i] - 9;  
+                }
+                additionnumber = additionnumber + arrayEven[i];
+            }
+            verificationDigit = (10 - (additionnumber % 10)) % 10;
 
+            if (verificationDigit == arrayPersonalCodeNumber[11])
+            {
+                return true;
+            }
+            else
+                return false;
         }
-
     }
 }
