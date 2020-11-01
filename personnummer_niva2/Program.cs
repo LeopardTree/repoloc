@@ -24,20 +24,16 @@ namespace PersonalCodeNumber
             long birthnumber;
             string sex;
             bool move = true;
+            Console.WriteLine("tryck escape om du vill avsluta programmet");
             while (move)
             {
                 // Ask for personal code number, 12 digits or 10 digits (with punctuation mark)
-
-
-                // Read input
-                //Troubleshooting: while loop...
-                //If{ userInput är 11 char long. Control if its just digits and punctuation mark at index 6. 
-                // return true or false}
-                //Else{ Do a Int64.TryParse. return true or false}
-
                 personalCodeNumber = UserInput();
-
-
+                
+                if (personalCodeNumber == -09999)
+                {
+                    break;
+                }
                 //method for creating an array of 
                 arrayPersonalCodeNumber = ArrayPersonalCodeNumber(personalCodeNumber);
 
@@ -91,13 +87,17 @@ namespace PersonalCodeNumber
                 {
                     Console.WriteLine("Detta var inte ett korrekt personnummer.");
                 }
+                //stop
+                if (Console.ReadKey().Key == ConsoleKey.Escape)
+                {
+                    move = false;
+                }
             }
-            //stop
-            Console.ReadKey();
+
+            
         }
         static bool ControlTwelveDigits(long[] arrayPersonalCodeNumber)
         {
-
             if (arrayPersonalCodeNumber.Length == 12)
             {
                 return true;
@@ -284,6 +284,12 @@ namespace PersonalCodeNumber
             while (isAPersonalCodeNumber == false)
             {
                 Console.WriteLine("Skriv in ett personnummer:");
+                if (Console.ReadKey().Key == ConsoleKey.Escape)
+                {
+                    personalCodeNumber = -09999;
+                    isAPersonalCodeNumber = true;
+                    break;
+                }
                 userInput = Console.ReadLine();
                 if (userInput.Length == 11)
                 {
@@ -344,13 +350,14 @@ namespace PersonalCodeNumber
                     userInput = "18" + userInput;
             }
             //now the string is 13 char long
-            //the punctuation mark are at index 8
+            //remove 1 char  at index 8, the punctuation mark
             userInput = userInput.Remove(8, 1);
             return personalCodeNumber = Int64.Parse(userInput);
         }
         static bool ControlVerificationDigit(long[] arrayPersonalCodeNumber)
         {
             //calculates and verifies the verificationdigit with the Luhn-algoritm
+            // does arrays for digits at even index and digits at odd index
             int[] arrayEven = new int[5];
             int[] arrayOdd = new int[4];
             int j = 0;
